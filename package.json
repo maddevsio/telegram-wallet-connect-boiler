@@ -1,0 +1,38 @@
+{
+  "name": "telegram-ethereum-boilerplate",
+  "version": "1.0.0",
+  "description": "Boilerplate for Telegram bot with Ethereum wallet integration",
+  "main": "main.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/main.js",
+    "dev": "npx tsx watch --include .env src/main.ts",
+    "lint": "eslint src/",
+    "lint.fix": "eslint src/ --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@walletconnect/ethereum-provider": "^2.19.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "gramio": "^0.2.2",
+    "qrcode": "^1.5.4",
+    "tsx": "^4.19.2",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin": "^2.13.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/qrcode": "^1.5.5",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
+  }
+}
