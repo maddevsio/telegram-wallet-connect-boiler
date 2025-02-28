@@ -1,22 +1,22 @@
 /**
- * Типы ошибок при работе с кошельком
+ * Wallet error types
  */
 export enum WalletErrorType {
-  PROVIDER_NO_ACCOUNTS = "Не удалось получить ни один из аккаунтов",
-  SIGNATURE_NOT_VERIFIED = "Ошибка в верификации подписи, вы должны верифицировать подпись только с вашего аккаунта",
-  SIGNATURE_TIMEOUT = "Время верификации кошелька истекло, попробуйте еще раз",
-  SIGNATURE_REQUEST_ERROR = "Не удалось выполнить подпись через ваш кошелек",
+  PROVIDER_NO_ACCOUNTS = "Failed to get any accounts",
+  SIGNATURE_NOT_VERIFIED = "Signature verification error, you must verify the signature only with your account",
+  SIGNATURE_TIMEOUT = "Wallet verification time expired, please try again",
+  SIGNATURE_REQUEST_ERROR = "Failed to sign with your wallet",
 }
 
 /**
- * Информация об адресе кошелька
+ * Wallet address information
  */
 export type WalletAddress = {
   address: string;
 }
 
 /**
- * Результат операции
+ * Operation result
  */
 export type Result<T, E> = {
   value?: T;

@@ -1,42 +1,45 @@
 # Telegram Ethereum Boilerplate
 
-Бойлерплейт для создания Telegram бота с интеграцией Ethereum кошелька. Этот проект позволяет пользователям подключать свои Ethereum кошельки к Telegram боту через WalletConnect или напрямую через браузерное расширение (например, MetaMask).
+[![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io?utm_source=github&utm_medium=madboiler)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-## Возможности
+Boilerplate for creating a Telegram bot with Ethereum wallet integration. This project allows users to connect their Ethereum wallets to a Telegram bot via WalletConnect or directly through a browser extension (e.g., MetaMask).
 
-- Создание Telegram бота с использованием библиотеки gramio
-- Подключение Ethereum кошелька через WalletConnect (QR-код)
-- Подключение Ethereum кошелька через браузерное расширение (window.ethereum)
-- Верификация владения кошельком через подпись сообщения
-- Надежная отправка сообщений через очередь
-- Логирование с настраиваемым уровнем детализации
+## Features
 
-## Требования
+- Creating a Telegram bot using the gramio library
+- Connecting an Ethereum wallet via WalletConnect (QR code)
+- Connecting an Ethereum wallet via browser extension (window.ethereum)
+- Wallet ownership verification through message signing
+- Reliable message sending through a queue
+- Logging with configurable detail level
+
+## Requirements
 
 - Node.js 18+
-- npm или yarn
-- Telegram Bot Token (получить у [@BotFather](https://t.me/BotFather))
-- WalletConnect Project ID (получить на [WalletConnect Cloud](https://cloud.walletconnect.com/))
+- npm or yarn
+- Telegram Bot Token (get from [@BotFather](https://t.me/BotFather))
+- WalletConnect Project ID (get from [WalletConnect Cloud](https://cloud.walletconnect.com/))
 
-## Установка
+## Installation
 
-1. Клонируйте репозиторий:
+1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd telegram-ethereum-boilerplate
 ```
 
-2. Установите зависимости:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Создайте файл `.env` на основе `.env.example`:
+3. Create a `.env` file based on `.env.example`:
 ```bash
 cp .env.example .env
 ```
 
-4. Заполните файл `.env` своими данными:
+4. Fill in your `.env` file with your data:
 ```
 # Telegram Bot
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
@@ -54,90 +57,90 @@ WC_CHAIN_ID=1 # Ethereum Mainnet
 LOG_LEVEL=info
 ```
 
-## Запуск
+## Running
 
-### Режим разработки
+### Development Mode
 
 ```bash
 npm run dev
 ```
 
-### Сборка и запуск в production
+### Build and Run in Production
 
 ```bash
 npm run build
 npm start
 ```
 
-## Структура проекта
+## Project Structure
 
 ```
 src/
-├── constants.ts           # Константы приложения
-├── lib/                   # Вспомогательные функции и классы
-│   ├── logger.ts          # Логгер
-│   └── utils.ts           # Утилиты
-├── main.ts                # Точка входа в приложение
-├── telegram/              # Модуль для работы с Telegram
-│   ├── bot.ts             # Класс Telegram бота с очередью сообщений
-│   └── messages.ts        # Шаблоны сообщений
-├── types/                 # Типы и интерфейсы
-│   ├── config.ts          # Тип конфигурации
-│   ├── telegram.ts        # Типы для Telegram
-│   └── wallet.ts          # Типы для работы с кошельком
-└── wallet/                # Модуль для работы с кошельком
-    ├── express-app.ts     # Express приложение
-    └── wallet-connect.ts  # Класс для работы с WalletConnect
+├── constants.ts           # Application constants
+├── lib/                   # Helper functions and classes
+│   ├── logger.ts          # Logger
+│   └── utils.ts           # Utilities
+├── main.ts                # Application entry point
+├── telegram/              # Module for working with Telegram
+│   ├── bot.ts             # Telegram bot class with message queue
+│   └── messages.ts        # Message templates
+├── types/                 # Types and interfaces
+│   ├── config.ts          # Configuration type
+│   ├── telegram.ts        # Types for Telegram
+│   └── wallet.ts          # Types for wallet operations
+└── wallet/                # Module for wallet operations
+    ├── express-app.ts     # Express application
+    └── wallet-connect.ts  # Class for working with WalletConnect
 ```
 
-## Особенности реализации
+## Implementation Features
 
-### Очередь сообщений
+### Message Queue
 
-Бойлерплейт использует очередь сообщений для надежной отправки сообщений в Telegram. Это позволяет:
-- Избежать ограничений Telegram API на частоту отправки сообщений
-- Гарантировать доставку сообщений даже при временных проблемах с соединением
-- Централизованно обрабатывать ошибки отправки
+The boilerplate uses a message queue for reliable message sending to Telegram. This allows:
+- Avoiding Telegram API rate limits for message sending
+- Guaranteeing message delivery even with temporary connection issues
+- Centralized handling of sending errors
 
-### Обработка ошибок WalletConnect
+### WalletConnect Error Handling
 
-Реализована глобальная обработка ошибок WalletConnect, которая предотвращает падение приложения при возникновении ошибок в библиотеке WalletConnect.
+Global error handling for WalletConnect is implemented, which prevents the application from crashing when errors occur in the WalletConnect library.
 
-## Настройка для production
+## Production Setup
 
-Для запуска в production рекомендуется:
+For production deployment, it is recommended to:
 
-1. Настроить HTTPS с помощью Nginx или другого прокси-сервера
-2. Обновить `BACKEND_URL` в файле `.env` на ваш домен с HTTPS
-3. Зарегистрировать домен в WalletConnect Dashboard для верификации
+1. Set up HTTPS using Nginx or another proxy server
+2. Update `BACKEND_URL` in the `.env` file to your domain with HTTPS
+3. Register your domain in the WalletConnect Dashboard for verification
 
-## Расширение функциональности
+## Extending Functionality
 
-Бойлерплейт предоставляет базовую функциональность для подключения кошелька. Вы можете расширить его, добавив:
+The boilerplate provides basic functionality for wallet connection. You can extend it by adding:
 
-- Сохранение данных пользователей в базу данных
-- Интеграцию с смарт-контрактами
-- Дополнительные команды и функции для Telegram бота
-- Мультиязычность с использованием i18n
+- Saving user data to a database
+- Integration with smart contracts
+- Additional commands and functions for the Telegram bot
+- Multilingual support using i18n
 
-## Получение необходимых ключей и токенов
+## Getting the Required Keys and Tokens
 
-### Получение Telegram Bot Token
+### Getting a Telegram Bot Token
 
-1. Откройте Telegram и найдите [@BotFather](https://t.me/BotFather)
-2. Отправьте команду `/newbot`
-3. Следуйте инструкциям BotFather для создания нового бота:
-   - Укажите имя бота (например, "My Ethereum Bot")
-   - Укажите username бота (должен заканчиваться на "bot", например, "my_ethereum_bot")
-4. После успешного создания бота, BotFather предоставит вам токен бота, который выглядит примерно так: `123456789:ABCDefGhIJKlmNoPQRsTUVwxyZ`
-5. Скопируйте этот токен в файл `.env` в поле `TELEGRAM_BOT_TOKEN`
+1. Open Telegram and find [@BotFather](https://t.me/BotFather)
+2. Send the `/newbot` command
+3. Follow BotFather's instructions to create a new bot:
+   - Specify the bot name (e.g., "My Ethereum Bot")
+   - Specify the bot username (must end with "bot", e.g., "my_ethereum_bot")
+4. After successful bot creation, BotFather will provide you with a bot token that looks something like: `123456789:ABCDefGhIJKlmNoPQRsTUVwxyZ`
+5. Copy this token to your `.env` file in the `TELEGRAM_BOT_TOKEN` field
 
-### Получение WalletConnect Project ID
+### Getting a WalletConnect Project ID
 
-1. Перейдите на [WalletConnect Cloud](https://cloud.walletconnect.com/)
-2. Зарегистрируйтесь или войдите в существующий аккаунт
-3. Нажмите на кнопку "Create New Project" (Создать новый проект)
-4. Введите название проекта (например, "Telegram Ethereum Bot")
-5. После создания проекта вы получите Project ID
-6. Скопируйте Project ID в файл `.env` в поле `WC_PROJECT_ID`
-7. В настройках проекта на WalletConnect Cloud добавьте домены, с которых будут приниматься запросы (для разработки можно использовать `localhost`)
+1. Go to [WalletConnect Cloud](https://cloud.walletconnect.com/)
+2. Register or log in to an existing account
+3. Click the "Create New Project" button
+4. Enter a project name (e.g., "Telegram Ethereum Bot")
+5. After creating the project, you will receive a Project ID
+6. Copy the Project ID to your `.env` file in the `WC_PROJECT_ID` field
+7. In the project settings on WalletConnect Cloud, add the domains from which requests will be accepted (for development, you can use `localhost`)

@@ -7,16 +7,16 @@ import { WalletConnect } from "../wallet/wallet-connect";
 import { messages } from "./messages";
 
 /**
- * Класс для работы с Telegram ботом
+ * Class for working with the Telegram bot
  */
 export class TelegramBot extends Logger {
   private bot: Bot;
   private sendQueue: (SendMessageParams | SendPhotoParams)[] = [];
   
   /**
-   * Конструктор класса TelegramBot
-   * @param config Конфигурация приложения
-   * @param walletConnect Экземпляр WalletConnect
+   * TelegramBot class constructor
+   * @param config Application configuration
+   * @param walletConnect WalletConnect instance
    */
   constructor(
     private config: Config,
@@ -26,31 +26,31 @@ export class TelegramBot extends Logger {
     
     this.bot = new Bot(config.TELEGRAM_BOT_TOKEN);
     
-    // Настройка команд бота
+    // Set up bot commands
     this.#setupCommands();
     
-    // Настройка обработчиков событий
+    // Set up event handlers
     this.#setupEventHandlers();
     
-    // Запуск очереди сообщений
+    // Start the message queue
     this.#startQueue();
   }
   
   /**
-   * Настраивает команды бота
+   * Sets up bot commands
    */
   #setupCommands = (): void => {
-    // Устанавливаем меню команд
+    // Set up the command menu
     this.bot.api.setMyCommands({
       commands: [
         {
           command: TelegramCommand.START,
-          description: "Начать работу с ботом",
+          description: "Start working with the bot",
         },
       ],
     });
     
-    // Обработчик команды /start
+    // /start command handler
     this.bot.command(TelegramCommand.START, (ctx) => {
       this.sendQueue.push({
         ...messages.start(),
@@ -60,13 +60,13 @@ export class TelegramBot extends Logger {
   }
   
   /**
-   * Настраивает обработчики событий
+   * Set up event handlers
    */
   #setupEventHandlers = (): void => {
-    // Обработчик callback-запросов (нажатий на кнопки)
+    // Callback query handler (button clicks)
     this.bot.on("callback_query", this.#onCallback);
     
-    // Обработчик события присоединения пользователя к боту
+    // Event handler for user joining the bot
     this.bot.on("my_chat_member", (ctx) => {
       if (ctx.newChatMember.status === "member") {
         this.sendQueue.push({
@@ -78,7 +78,7 @@ export class TelegramBot extends Logger {
   }
   
   /**
-   * Запускает очередь сообщений
+   * Start the message queue
    */
   #startQueue = (): void => {
     (async function sendLoop(thisBot: TelegramBot) {
@@ -107,7 +107,7 @@ export class TelegramBot extends Logger {
   }
   
   /**
-   * Обработчик callback-запросов
+   * Callback query handler
    */
   #onCallback = async (ctx: CallbackQueryContext<Bot>): Promise<void> => {
     const data = ctx.data;
@@ -120,35 +120,35 @@ export class TelegramBot extends Logger {
   }
   
   /**
-   * Подключает кошелек пользователя
+   * Pair the user's wallet
    */
   #pairWallet = async (tgId: number): Promise<void> => {
     try {
-      // Получаем URI для подключения кошелька
+      // Get the URI for connecting the wallet
       const uri = await this.walletConnect.connect(tgId);
       
       if (!uri) {
         this.sendQueue.push({
-          text: messages.walletError("Не удалось создать сессию подключения"),
+          text: messages.walletError("Failed to create connection session"),
           chat_id: tgId,
         });
         return;
       }
       
-      // Отправляем QR-код и ссылку для подключения
+      // Send QR code and connection link
       await this.#sendWalletQR(tgId, uri);
       
-      // Ожидаем результат верификации
+      // Wait for verification result
       const result = await this.walletConnect.getVerifyUser(tgId);
       
       if (result?.value) {
-        // Успешное подключение
+        // Successful connection
         this.sendQueue.push({
           text: messages.walletConnected(result.value.address),
           chat_id: tgId,
         });
       } else if (result?.error) {
-        // Ошибка подключения
+        // Connection error
         this.sendQueue.push({
           text: messages.walletError(result.error),
           chat_id: tgId,
@@ -157,14 +157,14 @@ export class TelegramBot extends Logger {
     } catch (error) {
       this.error(`Error pairing wallet: ${error}`);
       this.sendQueue.push({
-        text: messages.walletError("Произошла неизвестная ошибка"),
+        text: messages.walletError("Unknown error occurred"),
         chat_id: tgId,
       });
     }
   }
   
   /**
-   * Отправляет QR-код для подключения кошелька
+   * Send QR code for connecting the wallet
    */
   #sendWalletQR = async (tgId: number, uri: string): Promise<void> => {
     try {
@@ -176,19 +176,19 @@ export class TelegramBot extends Logger {
         `qr_${tgId}.png`,
       );
       
-      // Формируем URL для подключения через браузер
+      // Form URL for connecting through browser
       const walletConnectUrl = `${this.config.BACKEND_URL}/wallet_connect?id=${tgId}&uri=${btoa(uri)}`;
       
-      // Проверяем, начинается ли URI с https
+      // Check if URI starts with https
       const isHttpsUri = uri.startsWith('https://');
       
-      // Отправляем QR-код и ссылку для подключения
+      // Send QR code and connection link
       this.sendQueue.push({
         chat_id: tgId,
         photo: file,
         caption: isHttpsUri 
           ? messages.pairWalletQr() 
-          : `${messages.pairWalletQr()}\n\nИли скопируйте эту ссылку в ваш кошелек:\n<code>${uri}</code>`,
+          : `${messages.pairWalletQr()}\n\nOr copy this link to your wallet:\n<code>${uri}</code>`,
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: isHttpsUri ? [
@@ -204,14 +204,14 @@ export class TelegramBot extends Logger {
     } catch (error) {
       this.error(`Error sending wallet QR: ${error}`);
       this.sendQueue.push({
-        text: messages.walletError("Ошибка при генерации QR-кода"),
+        text: messages.walletError("Error generating QR code"),
         chat_id: tgId,
       });
     }
   }
   
   /**
-   * Запускает бота
+   * Start the bot
    */
   start = (): void => {
     this.bot.start();

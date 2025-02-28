@@ -1,5 +1,5 @@
 /**
- * Метаданные для WalletConnect
+ * Metadata for WalletConnect
  */
 export const WC_METADATA = {
   name: "Telegram Ethereum Boilerplate",

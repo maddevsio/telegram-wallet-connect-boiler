@@ -6,16 +6,16 @@ import { EventEmitter } from "events";
 import { Logger } from "../lib";
 
 /**
- * Класс для работы с Express приложением
+ * Class for working with Express application
  */
 export class ExpressApp extends Logger {
   private nonces: Map<number, string> = new Map();
   private emitter = new EventEmitter();
 
   /**
-   * Конструктор класса ExpressApp
-   * @param config Конфигурация приложения
-   * @param app Экземпляр Express приложения
+   * ExpressApp class constructor
+   * @param config Application configuration
+   * @param app Express application instance
    */
   constructor(
     private config: Config,
@@ -23,7 +23,7 @@ export class ExpressApp extends Logger {
   ) {
     super();
 
-    // Обработчик для подключения кошелька через браузер
+    // Handler for connecting wallet through browser
     this.app.get(`/wallet_connect`, (req: any, res: any) => {
       const tgId = Number(req.query.id);
       const uri = atob(req.query.uri);
@@ -66,7 +66,7 @@ export class ExpressApp extends Logger {
         `);
     });
 
-    // Обработчик для верификации подписи
+    // Handler for verifying signature
     this.app.get("/verify", (req, res) => {
       const { address, signature, id } = req.query;
       const tgId = Number(id);
@@ -99,11 +99,11 @@ export class ExpressApp extends Logger {
   }
 
   /**
-   * Верифицирует подпись
-   * @param message Сообщение
-   * @param signature Подпись
-   * @param address Адрес
-   * @returns true, если подпись верна, иначе false
+   * Verifies signature
+   * @param message Message
+   * @param signature Signature
+   * @param address Address
+   * @returns true if signature is valid, otherwise false
    */
   #verifySignature(
     message: string,
@@ -120,7 +120,7 @@ export class ExpressApp extends Logger {
   }
 
   /**
-   * Запускает сервер
+   * Starts server
    */
   listen = async (): Promise<void> => {
     this.app.listen(this.config.APP_SERVER_PORT, () => {
@@ -129,8 +129,8 @@ export class ExpressApp extends Logger {
   };
 
   /**
-   * Устанавливает обработчик для верификации пользователя
-   * @param callback Функция обратного вызова
+   * Sets handler for verifying user
+   * @param callback Callback function
    */
   onVerifyUser(
     callback: (tgId: number, result: Result<WalletAddress, WalletErrorType>) => void,

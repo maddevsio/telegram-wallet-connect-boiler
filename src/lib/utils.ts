@@ -4,22 +4,22 @@ import { Config } from '../types';
 dotenv.config();
 
 /**
- * Получает обязательную переменную окружения
- * @param name Имя переменной окружения
- * @returns Значение переменной окружения
- * @throws Error если переменная не определена
+ * Gets a required environment variable
+ * @param name Environment variable name
+ * @returns Environment variable value
+ * @throws Error if the variable is not defined
  */
 export function mustEnv<T extends string>(name: string): T {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`Переменная окружения ${name} не определена`);
+    throw new Error(`Environment variable ${name} is not defined`);
   }
   return value as T;
 }
 
 /**
- * Получает конфигурацию приложения из переменных окружения
- * @returns Конфигурация приложения
+ * Gets application configuration from environment variables
+ * @returns Application configuration
  */
 export function getConfig(): Config {
   return {

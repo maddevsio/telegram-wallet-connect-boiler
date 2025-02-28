@@ -1,5 +1,5 @@
 /**
- * Конфигурация приложения
+ * Application configuration
  */
 export type Config = {
   // Telegram

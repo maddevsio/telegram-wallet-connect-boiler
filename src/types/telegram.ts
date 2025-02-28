@@ -1,5 +1,5 @@
 /**
- * Команды Telegram бота
+ * Telegram bot commands
  */
 export enum TelegramCommand {
   START = "start",

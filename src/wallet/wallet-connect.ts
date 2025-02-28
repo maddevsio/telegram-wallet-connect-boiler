@@ -6,17 +6,17 @@ import { WC_METADATA } from "../constants";
 import { ExpressApp } from "./express-app";
 
 /**
- * Класс для работы с WalletConnect
+ * Class for working with WalletConnect
  */
 export class WalletConnect extends Logger {
   private pendingUsers: Map<number, InstanceType<typeof ProviderBuilder>> = new Map();
   private verifyUsers: Map<number, Result<WalletAddress, WalletErrorType>> = new Map();
-  private timeout: number = 300000; // 5 минут
+  private timeout: number = 300000; // 5 minutes
 
   /**
-   * Конструктор класса WalletConnect
-   * @param config Конфигурация приложения
-   * @param express Экземпляр Express приложения
+   * WalletConnect class constructor
+   * @param config Application configuration
+   * @param express Express application instance
    */
   constructor(
     private config: Config,
@@ -28,13 +28,13 @@ export class WalletConnect extends Logger {
       this.verifyUsers.set(tgId, result);
     });
     
-    // Устанавливаем глобальный обработчик необработанных исключений
+    // Set up global error handlers
     this.#setupGlobalErrorHandlers();
   }
 
   /**
-   * Инициализирует провайдер WalletConnect
-   * @returns Провайдер WalletConnect
+   * Initialize WalletConnect provider
+   * @returns WalletConnect provider
    */
   #initProvider = () =>
     ProviderBuilder.init({
@@ -46,9 +46,9 @@ export class WalletConnect extends Logger {
     });
 
   /**
-   * Подключает кошелек пользователя через WalletConnect
-   * @param tgId Идентификатор пользователя в Telegram
-   * @returns URI для подключения кошелька или undefined, если пользователь уже подключен
+   * Connect user's wallet via WalletConnect
+   * @param tgId Telegram user ID
+   * @returns URI for connecting wallet or undefined if user is already connected
    */
   connect = async (tgId: number): Promise<string | undefined> => {
     if (this.pendingUsers.has(tgId)) {
@@ -120,8 +120,8 @@ export class WalletConnect extends Logger {
   };
 
   /**
-   * Ожидает подключения кошелька пользователя
-   * @param tgId Идентификатор пользователя в Telegram
+   * Wait for user's wallet connection
+   * @param tgId Telegram user ID
    */
   #waitUser = async (tgId: number): Promise<void> => {
     const startTime = Date.now();
@@ -137,9 +137,9 @@ export class WalletConnect extends Logger {
   }
 
   /**
-   * Получает результат верификации пользователя
-   * @param tgId Идентификатор пользователя в Telegram
-   * @returns Результат верификации пользователя
+   * Get user verification result
+   * @param tgId Telegram user ID
+   * @returns User verification result
    */
   getVerifyUser = async (tgId: number): Promise<Result<WalletAddress, WalletErrorType> | undefined> => {
     while (!this.verifyUsers.has(tgId)) {
@@ -153,12 +153,12 @@ export class WalletConnect extends Logger {
   };
 
   /**
-   * Устанавливает глобальные обработчики ошибок для перехвата ошибок WalletConnect
+   * Set up global error handlers for WalletConnect
    */
   #setupGlobalErrorHandlers = (): void => {
-    // Перехватываем необработанные исключения
+    // Catch unhandled exceptions
     process.on('uncaughtException', (error: Error) => {
-      // Проверяем, связана ли ошибка с WalletConnect proposals
+      // Check if the error is related to WalletConnect proposals
       if (error.message && (
           error.message.includes('Proposal expired') || 
           error.message.includes('walletconnect') ||
@@ -166,24 +166,24 @@ export class WalletConnect extends Logger {
       )) {
         this.error(`[GLOBAL ERROR] Caught WalletConnect proposal error: ${error.message}`);
         
-        // Логируем стек вызовов для отладки
+        // Log stack trace for debugging
         if (error.stack) {
           this.error(`[GLOBAL ERROR] Stack trace: ${error.stack}`);
         }
       } else {
-        // Для других ошибок просто логируем, но позволяем процессу продолжить работу
+        // For other errors, just log and allow the process to continue
         this.error(`[GLOBAL ERROR] Uncaught exception: ${error.message}`);
         
-        // Логируем стек вызовов для отладки
+        // Log stack trace for debugging
         if (error.stack) {
           this.error(`[GLOBAL ERROR] Stack trace: ${error.stack}`);
         }
       }
     });
     
-    // Перехватываем необработанные отклонения промисов
+    // Catch unhandled promise rejections
     process.on('unhandledRejection', (reason: any) => {
-      // Проверяем, связана ли ошибка с WalletConnect proposals
+      // Check if the error is related to WalletConnect proposals
       if (reason && reason.message && (
           reason.message.includes('Proposal expired') || 
           reason.message.includes('walletconnect') ||
@@ -191,12 +191,12 @@ export class WalletConnect extends Logger {
       )) {
         this.error(`[GLOBAL ERROR] Caught WalletConnect proposal rejection: ${reason.message}`);
         
-        // Логируем стек вызовов для отладки
+        // Log stack trace for debugging
         if (reason.stack) {
           this.error(`[GLOBAL ERROR] Stack trace: ${reason.stack}`);
         }
       } else {
-        // Для других ошибок просто логируем, но позволяем процессу продолжить работу
+        // For other errors, just log and allow the process to continue
         this.error(`[GLOBAL ERROR] Unhandled rejection: ${reason}`);
       }
     });

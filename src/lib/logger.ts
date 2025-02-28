@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Настройка логгера приложения
+ * Application logger configuration
  */
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -20,25 +20,25 @@ const logger = winston.createLogger({
 });
 
 /**
- * Базовый класс для логирования
+ * Base class for logging
  */
 export class Logger {
   /**
-   * Логирование информационного сообщения
+   * Log information message
    */
   protected info(message: string): void {
     logger.info(message);
   }
 
   /**
-   * Логирование предупреждения
+   * Log warning
    */
   protected warn(message: string): void {
     logger.warn(message);
   }
 
   /**
-   * Логирование ошибки
+   * Log error
    */
   protected error(message: string | Error): void {
     if (message instanceof Error) {
@@ -49,7 +49,7 @@ export class Logger {
   }
 
   /**
-   * Логирование отладочной информации
+   * Log debug information
    */
   protected debug(message: string): void {
     logger.debug(message);

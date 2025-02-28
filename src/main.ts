@@ -4,40 +4,40 @@ import { getConfig, Logger } from './lib';
 import { TelegramBot } from './telegram';
 import { ExpressApp, WalletConnect } from './wallet';
 
-// Загружаем переменные окружения
+// Load environment variables
 dotenv.config();
 
 /**
- * Основной класс приложения
+ * Main application class
  */
 class Application extends Logger {
   /**
-   * Запускает приложение
+   * Starts the application
    */
   async start(): Promise<void> {
     try {
-      // Получаем конфигурацию
+      // Get configuration
       const config = getConfig();
       
-      // Создаем экземпляр Express
+      // Create Express instance
       const app = express();
       
-      // Настраиваем middleware
+      // Configure middleware
       app.use(express.json());
       
-      // Создаем экземпляр ExpressApp
+      // Create ExpressApp instance
       const expressApp = new ExpressApp(config, app);
       
-      // Создаем экземпляр WalletConnect
+      // Create WalletConnect instance
       const walletConnect = new WalletConnect(config, expressApp);
       
-      // Создаем экземпляр TelegramBot
+      // Create TelegramBot instance
       const telegramBot = new TelegramBot(config, walletConnect);
       
-      // Запускаем сервер
+      // Start the server
       await expressApp.listen();
       
-      // Запускаем бота
+      // Start the bot
       telegramBot.start();
       
       this.info('Application started successfully');
@@ -48,6 +48,6 @@ class Application extends Logger {
   }
 }
 
-// Создаем и запускаем приложение
+// Create and start the application
 const application = new Application();
 application.start(); 
